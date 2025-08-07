@@ -1,40 +1,33 @@
 import express from "express";
 import dotenv from "dotenv";
 import { z } from "zod";
+import scanRouter from "./routes/scan";
+import logger from "./core/logger";
+import { logRequest } from "./pre-request-handlers/log-request";
 
 dotenv.config();
-
 const app = express();
+
+app.use(logRequest);
+
+
 app.use(express.json({ limit: "100kb" }));
+app.use("/api/scan", scanRouter);
 
-// A stubbed POST /api/scan endpoint
-app.post("/api/scan", (req, res) => {
-    // Validate shape with Zod
-    const schema = z.object({
-        source: z.enum(["raw", "gist"]),
-        content: z
-            .string()
-            .min(1)
-            .max(100 * 1024),
-    });
-    const result = schema.safeParse(req.body);
-    if (!result.success) {
-        return res.status(400).json({
-            code: "INVALID_REQUEST",
-            message: result.error.name,
-        });
+app.use((err: any, req: any, res: any, next: any) => {
+    if (err.type === "entity.too.large") {
+        return res
+            .status(413)
+            .json({ code: "PAYLOAD_TOO_LARGE", message: "Payload too large" });
     }
-
-    // Stub response
-    return res.json([
-        {
-            line: 1,
-            issueType: "SQL Injection",
-            severity: "HIGH",
-            description: "This is a stubbed issue.",
-        },
-    ]);
+    logger.error(err);
+    res.status(500).json({
+        code: "INTERNAL_ERROR",
+        message: "Internal server error",
+    });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    logger.info(`Server listening on port ${PORT}`);
+});

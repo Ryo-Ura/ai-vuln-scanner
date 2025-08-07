@@ -13,11 +13,17 @@
   "dependencies": {
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-pino-logger": "^7.0.0",
+    "nanoid": "^5.1.5",
+    "node-fetch": "^2.7.0",
+    "pino": "^9.7.0",
     "zod": "^4.0.15"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/express-pino-logger": "^4.0.6",
     "@types/node": "^24.2.0",
+    "@types/node-fetch": "^2.6.13",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
   }
