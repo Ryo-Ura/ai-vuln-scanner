@@ -4,14 +4,12 @@ import dotenv from "dotenv";
 import logger from './logger';  // or wherever your logger lives
 import fetch from "node-fetch";
 
-
 dotenv.config();
 
 const API_BASE = "https://openrouter.ai/api/v1/chat/completions";
 const API_KEY = process.env.OPENROUTER_API_KEY!;
 if (!API_KEY) throw new Error("Missing OPENROUTER_KEY");
 
-// Load the prompt template once
 const tplPath = path.resolve(__dirname, "../prompts/scan.tpl");
 let rawTemplate: string;
 (async () => {
@@ -23,7 +21,7 @@ export async function analyzeCode(code: string): Promise<string> {
     // Fill in the code into the template
     const prompt = rawTemplate;
     // const prompt = rawTemplate.replace("{{code}}", code);
-    logger.info({ prompt }, "Filled-in security scan prompt");
+    logger.info("Filled-in security scan prompt");
 
     const payload = {
         model: "mistralai/mistral-7b-instruct:free",

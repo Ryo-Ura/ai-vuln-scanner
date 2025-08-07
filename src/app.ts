@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import { z } from "zod";
 import scanRouter from "./routes/scan";
 import logger from "./core/logger";
 import { logRequest } from "./pre-request-handlers/log-request";
@@ -9,7 +8,6 @@ dotenv.config();
 const app = express();
 
 app.use(logRequest);
-
 
 app.use(express.json({ limit: "100kb" }));
 app.use("/api/scan", scanRouter);
