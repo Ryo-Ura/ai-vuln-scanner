@@ -8,7 +8,7 @@ dotenv.config();
 
 const API_BASE = "https://openrouter.ai/api/v1/chat/completions";
 const API_KEY = process.env.OPENROUTER_API_KEY!;
-if (!API_KEY) throw new Error("Missing OPENROUTER_KEY");
+if (!API_KEY) throw new Error("Missing OPENROUTER_API_KEY");
 
 const tplPath = path.resolve(__dirname, "../prompts/scan.tpl");
 let rawTemplate: string;
