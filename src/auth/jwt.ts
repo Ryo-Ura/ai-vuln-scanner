@@ -1,35 +1,46 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import type { StringValue } from "ms";
 
 dotenv.config();
 
-const _secret = process.env.JWT_SECRET;
-if (!_secret) {
+const secret = process.env.JWT_SECRET;
+if (!secret) {
     throw new Error("Missing JWT_SECRET in environment");
 }
-export const SECRET: string = _secret;
+export const SECRET: string = secret;
 
-
-interface TokenPayload {
+export interface BasicPayload {
     sub: number;
+    iat: number;
+    exp: number;
 }
 
-/**
- * Sign a JWT for the given user ID.
- * @param userId - the database User.id
- * @returns a signed JWT string, expires in 15 minutes
- */
-export function signToken(userId: number): string {
-    const payload: TokenPayload = { sub: userId };
-    return jwt.sign(payload, SECRET, { expiresIn: '15m' });
+export interface AccessPayload {
+    id: number;
+    jwtSecureCode: string; // plain code from login (DB stores the bcrypt hash)
+    iat: number;
+    exp: number;
 }
 
-/**
- * Verify a JWT string.
- * @param token - the JWT to verify
- * @returns the decoded payload ({ sub: userId })
- * @throws if the token is invalid or expired
- */
-export function verifyToken(token: string): TokenPayload {
-    return <any>jwt.verify(token, SECRET) as TokenPayload;
+/** Legacy/simple token (not used for auth flow, but kept for compatibility) */
+export function signToken(userId: number, expire: StringValue = "15m"): string {
+    return jwt.sign({ sub: userId }, SECRET, { expiresIn: expire });
+}
+export function verifyToken(token: string): BasicPayload {
+    return <any>jwt.verify(token, SECRET) as BasicPayload;
+}
+
+/** Main token used by the Google OAuth flow (matches the article pattern) */
+export function signAccessToken(
+    userId: number,
+    jwtSecureCodePlain: string,
+    expire: StringValue = "15m"
+): string {
+    return jwt.sign({ id: userId, jwtSecureCode: jwtSecureCodePlain }, SECRET, {
+        expiresIn: expire,
+    });
+}
+export function verifyAccessToken(token: string): AccessPayload {
+    return jwt.verify(token, SECRET) as AccessPayload;
 }

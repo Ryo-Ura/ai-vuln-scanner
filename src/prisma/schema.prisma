@@ -12,6 +12,7 @@ model User {
   email     String  @unique
   googleId  String  @unique
   createdAt DateTime @default(now())
+  jwtSecureCode String  
   scans     Scan[]
 }
 
