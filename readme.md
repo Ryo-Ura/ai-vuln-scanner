@@ -15,7 +15,7 @@ LLM used: [openai/gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b)
 - **Frontend**: minimal React (Vite) UI to sign in, paste code, and view results
 - **DB**: Prisma + SQLite for users/scans/vulnerabilities
 - **Logging**: Pino with request correlation
-- **Planned**: per-user Redis rate limiting + usage headers
+- **Rate limiting**: per-user Redis rate limiting + usage headers
 
 ## Example
 ```
@@ -41,6 +41,9 @@ int main()
 <img width="800" alt="image" src="https://github.com/user-attachments/assets/de02d6ae-b659-4112-8743-d6828375c71d" />
 
 
+## Rate limit
+Rolling window based rate limiting is implemented with Redis.
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/1e0f9f36-fc21-42c5-b86b-3fc9d477ac49" />
 
 
 ## Stack
