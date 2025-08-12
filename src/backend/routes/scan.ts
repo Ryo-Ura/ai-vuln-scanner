@@ -8,6 +8,7 @@ import {
 import logger from "../utils/logger";
 import { analyzeCode } from "../core/llmClient";
 import passport from "passport";
+import { rateLimitRolling } from "../middleware/rateLimiter";
 
 const log = logger.child({ module: "scanRoute" });
 const router = Router();
@@ -15,6 +16,7 @@ const router = Router();
 router.post(
     "/",
     passport.authenticate("jwtAuth", { session: false }),
+    rateLimitRolling,
     async (req, res) => {
         // 1) Validate the incoming request body against our Zod schema
         const parsed = scanRequestSchema.safeParse(req.body);
