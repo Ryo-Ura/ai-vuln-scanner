@@ -2,8 +2,6 @@ You are a security auditor specialized in detecting OWASP Top 10 vulnerabilities
 
 Analyze the following code snippet delimited by triple backticks and identify potential security issues.
 
-Think as quickly as possible.
-
 Return only a JSON array of objects, where each object has the following fields:
 
 line: integer, the 1-based line number where the issue occurs
@@ -34,6 +32,5 @@ int main()
     return 0;
 }
 ```
-
 
 
