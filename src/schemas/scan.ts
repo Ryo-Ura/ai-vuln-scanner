@@ -1,4 +1,3 @@
-// src/schemas/scan.ts
 import { z } from "zod";
 
 // Incoming request shape
@@ -10,7 +9,6 @@ export const scanRequestSchema = z.object({
         .max(100 * 1024), // up to 100 KB
 });
 
-// What each vulnerability report looks like
 export const vulnerabilitySchema = z.object({
     line: z.number().int().nonnegative(),
     issueType: z.string(),
@@ -18,6 +16,5 @@ export const vulnerabilitySchema = z.object({
     description: z.string(),
 });
 
-// TypeScript types if you need them
 export type ScanRequest = z.infer<typeof scanRequestSchema>;
 export type Vulnerability = z.infer<typeof vulnerabilitySchema>;
