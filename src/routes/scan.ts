@@ -1,4 +1,3 @@
-// src/routes/scan.ts
 import { Router } from "express";
 import { z } from "zod";
 import {
@@ -32,16 +31,7 @@ router.post("/", async (req, res, next) => {
         );
 
         // 3) Parse the LLM’s reply as JSON
-        let issues: unknown[];
-        try {
-            issues = JSON.parse(raw);
-        } catch (err) {
-            log.error({ err, raw }, "Failed to parse LLM JSON");
-            return res.status(502).json({
-                code: "LLM_RESPONSE_PARSE_ERROR",
-                message: "Invalid JSON format from LLM",
-            });
-        }
+        const issues = await analyzeCode(content);
 
         // 4) Validate each item against our vulnerability schema
         const validated = z.array(vulnerabilitySchema).safeParse(issues);

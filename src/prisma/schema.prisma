@@ -1,0 +1,37 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  googleId  String  @unique
+  createdAt DateTime @default(now())
+  jwtSecureCode String  
+  scans     Scan[]
+}
+
+model Scan {
+  id           Int             @id @default(autoincrement())
+  user         User            @relation(fields: [userId], references: [id])
+  userId       Int
+  source       String
+  contentHash  String          @unique
+  createdAt    DateTime        @default(now())
+  vulnerabilities Vulnerability[]
+}
+
+model Vulnerability {
+  id          Int      @id @default(autoincrement())
+  scan        Scan     @relation(fields: [scanId], references: [id])
+  scanId      Int
+  line        Int
+  issueType   String
+  severity    String
+  description String
+}
