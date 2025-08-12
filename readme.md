@@ -31,7 +31,8 @@ int main()
     return 0;
 }
 ```
-![alt text](image.png)
+<img width="856" height="589" alt="image" src="https://github.com/user-attachments/assets/de02d6ae-b659-4112-8743-d6828375c71d" />
+
 
 ## Stack
 TypeScript • Express • Passport (google + jwt) • Prisma (SQLite) • React (Vite) • Pino • Zod • OpenRouter (DeepSeek model)
