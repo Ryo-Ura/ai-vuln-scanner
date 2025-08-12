@@ -1,4 +1,3 @@
-// src/routes/scan.ts
 import { Router } from "express";
 import { z } from "zod";
 import {
