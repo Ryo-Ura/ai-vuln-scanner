@@ -4,6 +4,7 @@ import { scanCode } from "./lib/api";
 import ScanForm from "./components/ScanForm";
 import ResultsTable from "./components/ResultTable";
 import type { Vulnerability } from "./types";
+import { extractUserMessage } from "../../shared/util/logging-util"
 
 export default function App() {
     // auth
@@ -24,8 +25,14 @@ export default function App() {
         try {
             const data = await scanCode(req, token ?? undefined);
             setResults(data);
-        } catch {
-            setScanError("Scan failed");
+        } catch (e: unknown) {
+            const raw =
+                e instanceof Error
+                    ? e.message
+                    : typeof e === "string"
+                    ? e
+                    : "Unknown error";
+            setScanError(extractUserMessage(raw));
         } finally {
             setIsScanning(false);
         }
