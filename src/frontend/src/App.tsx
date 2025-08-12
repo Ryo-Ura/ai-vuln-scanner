@@ -4,13 +4,12 @@ import { scanCode } from "./lib/api";
 import ScanForm from "./components/ScanForm";
 import ResultsTable from "./components/ResultTable";
 import type { Vulnerability } from "./types";
-import { extractUserMessage } from "../../shared/util/logging-util"
+import { HttpError } from "./lib/httpError";
+import { GENERIC_ERROR_MESSAGE } from "./constant"
 
 export default function App() {
-    // auth
     const { user, token, authError, loginHref, logout } = useAuth();
 
-    // scan state
     const [isScanning, setIsScanning] = useState(false);
     const [scanError, setScanError] = useState<string | null>(null);
     const [results, setResults] = useState<Vulnerability[] | null>(null);
@@ -26,13 +25,23 @@ export default function App() {
             const data = await scanCode(req, token ?? undefined);
             setResults(data);
         } catch (e: unknown) {
-            const raw =
-                e instanceof Error
-                    ? e.message
-                    : typeof e === "string"
-                    ? e
-                    : "Unknown error";
-            setScanError(extractUserMessage(raw));
+            if (e instanceof HttpError) {
+                if (e.status === 401 || e.status === 429) {
+                    setScanError(e.message);
+                } else {
+                    setScanError(GENERIC_ERROR_MESSAGE);
+                    if (import.meta.env.DEV)
+                        console.warn(
+                            "Scan error detail:",
+                            e.status,
+                            e.code,
+                            e.body
+                        );
+                }
+            } else {
+                setScanError(GENERIC_ERROR_MESSAGE);
+                if (import.meta.env.DEV) console.warn("Unknown error:", e);
+            }
         } finally {
             setIsScanning(false);
         }
