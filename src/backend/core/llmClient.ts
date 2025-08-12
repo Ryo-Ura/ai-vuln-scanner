@@ -46,7 +46,7 @@ export async function analyzeCode(code: string): Promise<string> {
 
     // ——— Attempt 1: Assistant Prefill + Structured Outputs (json_schema) ———
     const payloadWithSchema = {
-        model: "deepseek/deepseek-chat-v3-0324:free",
+        model: "openai/gpt-oss-20b:free",
         messages: [
             { role: "user", content: prompt },
             { role: "assistant", content: "[" },
@@ -72,8 +72,6 @@ export async function analyzeCode(code: string): Promise<string> {
                 : JSON.stringify(content);
         }
 
-        // If the model/provider doesn’t support json_schema,
-        // OpenRouter returns an error; we’ll fall back.
         const errText = await res.text();
         logger.warn(
             { errText },
@@ -93,8 +91,6 @@ export async function analyzeCode(code: string): Promise<string> {
             { role: "user", content: prompt },
             { role: "assistant", content: "[" },
         ],
-        // IMPORTANT: no response_format here because json_object would force an object,
-        // and we want an array. (json_schema might not be supported by this model.)
     };
 
     const res2 = await fetch(API_BASE, {
