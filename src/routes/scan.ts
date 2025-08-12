@@ -11,30 +11,50 @@ import { analyzeCode } from "../core/llmClient";
 const log = logger.child({ module: "scanRoute" });
 const router = Router();
 
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res) => {
     // 1) Validate the incoming request body against our Zod schema
     const parsed = scanRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-        const message = z.treeifyError(parsed.error);
-        log.warn({ errors: z.treeifyError(parsed.error) }, "Invalid scan request");
+        const message = z.treeifyError(parsed.error); // keeping your formatter
+        log.warn({ errors: message }, "Invalid scan request");
         return res.status(400).json({ code: "INVALID_REQUEST", message });
     }
     const { source, content } = parsed.data;
     log.info({ source }, "Scan request received");
 
     try {
-        // 2) Invoke the LLM with the user’s code snippet
-        const raw = await analyzeCode(content);
-        log.info(
-            { rawSnippet: raw.slice(0, 200) },
-            "Raw LLM response (truncated)"
-        );
+        // 2) Invoke the LLM ONCE
+        const llmOut = await analyzeCode(content);
 
-        // 3) Parse the LLM’s reply as JSON
-        const issues = await analyzeCode(content);
+        // 3) If string -> parse JSON, else use directly
+        let issuesUnknown: unknown;
+        if (typeof llmOut === "string") {
+            log.debug(
+                { rawSnippet: llmOut.slice(0, 200) },
+                "LLM response (string, truncated)"
+            );
+            try {
+                issuesUnknown = JSON.parse(llmOut);
+            } catch (err) {
+                log.error({ err, raw: llmOut }, "Failed to parse LLM JSON");
+                return res.status(502).json({
+                    code: "LLM_RESPONSE_PARSE_ERROR",
+                    message: "Invalid JSON format from LLM",
+                });
+            }
+        } else {
+            issuesUnknown = llmOut;
+            log.debug(
+                {
+                    kind: Array.isArray(llmOut) ? "array" : typeof llmOut,
+                    length: Array.isArray(llmOut),
+                },
+                "LLM response (non-string)"
+            );
+        }
 
-        // 4) Validate each item against our vulnerability schema
-        const validated = z.array(vulnerabilitySchema).safeParse(issues);
+        // 4) Validate against our schema
+        const validated = z.array(vulnerabilitySchema).safeParse(issuesUnknown);
         if (!validated.success) {
             log.error(
                 { errors: z.treeifyError(validated.error) },
@@ -46,10 +66,9 @@ router.post("/", async (req, res, next) => {
             });
         }
 
-        // 5) Return the array of validated Vulnerability objects
+        // 5) Return the validated Vulnerability[]
         return res.json(validated.data as Vulnerability[]);
     } catch (err: any) {
-        // 6) Catch any network/LLM errors and surface as 502
         log.error({ err }, "Error during scanning process");
         return res.status(502).json({
             code: "LLM_CALL_ERROR",
