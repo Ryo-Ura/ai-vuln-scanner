@@ -17,6 +17,8 @@ LLM used: [openai/gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b)
 - **Logging**: Pino with request correlation
 - **Rate limiting**: per-user Redis rate limiting + usage headers
 
+Planning to deploy this shortly. Currently fine tuning and hopefully be helpful/useful in CPSC436s course😀
+
 ## Example
 ```
 /* An example of an ERROR for some 64-bit architectures,
