@@ -2,13 +2,14 @@ import fetch from "node-fetch";
 import fs from "fs/promises";
 import path from "path";
 import dotenv from "dotenv";
-import logger from "./logger";
+import logger from "../utils/logger";
 
 dotenv.config();
 
-const API_BASE = "https://openrouter.ai/api/v1/chat/completions";
+const API_BASE = process.env.LLM_API || "";
 const API_KEY = process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
 if (!API_KEY) throw new Error("Missing OPENROUTER_API_KEY (or OPENROUTER_KEY)");
+if (!API_BASE) throw new Error("Missing API_BASE");
 
 const tplPath = path.resolve(__dirname, "../prompts/scan.tpl");
 let rawTemplate: string;

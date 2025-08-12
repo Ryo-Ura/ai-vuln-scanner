@@ -5,7 +5,7 @@ import {
     vulnerabilitySchema,
     Vulnerability,
 } from "../schemas/scan";
-import logger from "../core/logger";
+import logger from "../utils/logger";
 import { analyzeCode } from "../core/llmClient";
 import passport from "passport";
 

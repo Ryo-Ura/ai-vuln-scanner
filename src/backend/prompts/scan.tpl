@@ -4,7 +4,7 @@ Analyze the following code snippet delimited by triple backticks and identify po
 
 Return only a JSON array of objects, where each object has the following fields:
 
-line: integer, the 1-based line number where the issue occurs
+line: integer, the 1-based line number where the issue occurs. line number start from the beginning of the code
 
 issueType: string, the vulnerability type (e.g., "SQL Injection", "Cross-Site Scripting")
 

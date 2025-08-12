@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import scanRouter from "./routes/scan";
-import logger from "./core/logger";
+import logger from "./utils/logger";
 import { logRequest } from "./pre-request-handlers/log-request";
 
 import cors from "cors";
