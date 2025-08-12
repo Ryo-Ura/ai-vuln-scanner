@@ -2,6 +2,13 @@
 
 A tiny full-stack project that scans code for security issues using an LLM. Built to learn modern TS/Node patterns: auth with Google OAuth + JWT, schema-first validation, and clean logging.
 
+LLM used: [openai/gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b)
+
+| | |
+| :--: | :--: |
+| `SQL injection` <img width="800" alt="image" src="https://github.com/user-attachments/assets/5361b10d-fc2a-4a0e-8743-c3599dc5f486" />| `buffer overflow` <img width="800" alt="image" src="https://github.com/user-attachments/assets/577f04b0-615a-4d40-896d-d842ca10925f" />|
+|`DoS` <img width="865" height="800" alt="image" src="https://github.com/user-attachments/assets/16725efe-bfbe-4e56-88ce-d5a18a73e948" />| `command injection` <img width="800" alt="image" src="https://github.com/user-attachments/assets/6e541c4a-6ccf-460d-93d7-b233bc501081" />|
+
 ## Features
 - **Auth**: Google OAuth 2.0 (Passport) → JWT (15m) with per-login `jwtSecureCode` rotation
 - **Scan API**: `POST /api/scan` → prompts LLM and returns structured findings (line, type, severity, description)
@@ -31,9 +38,11 @@ int main()
     return 0;
 }
 ```
-<img width="856" height="589" alt="image" src="https://github.com/user-attachments/assets/de02d6ae-b659-4112-8743-d6828375c71d" />
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/de02d6ae-b659-4112-8743-d6828375c71d" />
+
+
 
 
 ## Stack
-TypeScript • Express • Passport (google + jwt) • Prisma (SQLite) • React (Vite) • Pino • Zod • OpenRouter (DeepSeek model)
+TypeScript • Express • Passport (google + jwt) • Prisma (SQLite) • React (Vite) • Pino • Zod • OpenRouter
 
